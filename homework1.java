@@ -1,6 +1,3 @@
-package Java_Welcome;
-
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -76,6 +73,7 @@ public class homework1 {
         System.out.print("Введите выражение: ");
         String[] splitted = scanner.nextLine().split("\\+|\\=");
         boolean is_question = false;
+        scanner.close();
 
         if (splitted.length > 3) {
             System.out.println("Неверное выражение!");
