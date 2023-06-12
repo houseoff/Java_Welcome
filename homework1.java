@@ -67,12 +67,85 @@ public class homework1 {
     // Требуется восстановить выражение до верного равенства.
     // Знаки вопроса - одинаковые цифры.
     // Предложить хотя бы одно решение или сообщить, что его нет
+    private static class SpecialNumber {
+        int value;
+        int multiplier;
+        int countQuestions;
+
+        public SpecialNumber(int value, int multiplier, int countQuestions) {
+            this.value = value;
+            this.multiplier = multiplier;
+            this.countQuestions = countQuestions;
+        }
+    }
+
+    private static SpecialNumber getSpecialNumber(String digit) {
+        SpecialNumber sNumber = new SpecialNumber(0, 0, 0);
+        if (digit.matches("^[1-9]\\?$")) {
+            Character ch = digit.charAt(0);
+            sNumber.value = Integer.parseInt(ch.toString()) * 10;
+            sNumber.countQuestions = 1;
+            sNumber.multiplier = 1;
+        } else if (digit.matches("^\\?[1-9]$")) {
+            Character ch = digit.charAt(1);
+            sNumber.value = Integer.parseInt(ch.toString());
+            sNumber.countQuestions = 1;
+            sNumber.multiplier = 10;
+        } else if (digit.matches("^\\?\\?$")) {
+            sNumber.value = 11;
+            sNumber.countQuestions = 2;
+            sNumber.multiplier = 1;
+        } else if (digit.matches("^\\d+$")) {
+            sNumber.value = Integer.parseInt(digit);
+            sNumber.countQuestions = 0;
+            sNumber.multiplier = 1;
+        }
+        return sNumber;
+    }
+
+    private static void getResult(SpecialNumber first, SpecialNumber second, int result) {
+        if (first.countQuestions == 0 && second.countQuestions == 0) {
+            int exprValue = first.value + second.value;
+            if (exprValue == result) {
+                System.out.printf("Найдено решение: %d + %d = %d", first.value, second.value, result);
+                return;
+            }
+        } else {
+            for (int i = 1; i < 10; i++) {
+                int firstNum;
+                int secondNum;
+                if (first.countQuestions == 2 && second.countQuestions == 2) {
+                    firstNum  = first.value  * i;
+                    secondNum = second.value * i;
+                } else if (first.countQuestions == 2 && second.countQuestions == 1) {
+                    firstNum  = first.value  * i;
+                    secondNum = second.value + (i * second.multiplier);
+                } else if (first.countQuestions == 1 && second.countQuestions == 2) {
+                    firstNum  = first.value  + (i * first.multiplier);
+                    secondNum = second.value * i;
+                } else if (first.countQuestions == 1 && second.countQuestions == 1) {
+                    firstNum  = first.value  + (i * first.multiplier);
+                    secondNum = second.value + (i * second.multiplier);
+                } else {
+                    firstNum  = 0;
+                    secondNum = 0;
+                }
+
+                if (firstNum + secondNum == result) {
+                    System.out.printf("Найдено решение: %d + %d = %d", firstNum, secondNum, result);
+                    return;
+                }
+            }
+        }
+
+        System.out.printf("Нет решения");
+        return;
+    }
+
     public static void findNumbers() {
-        List<Integer> list = new ArrayList<Integer>();
         Scanner scanner = new Scanner(System.in);
         System.out.print("Введите выражение: ");
         String[] splitted = scanner.nextLine().split("\\+|\\=");
-        boolean is_question = false;
         scanner.close();
 
         if (splitted.length > 3) {
@@ -85,74 +158,17 @@ public class homework1 {
         }
 
         for (int i = 0; i < 2; i++) {
-            StringBuilder firstDigit = new StringBuilder();
             if (splitted[i].length() > 2) {
                 System.out.println("Слагаемые должны быть максимум двузначными!");
                 return;
             }
-
-            if (splitted[i].matches("^[1-9]\\?$")) {
-                firstDigit.append(splitted[i].charAt(0));
-                list.add(Integer.parseInt(firstDigit.toString()) * 10);
-                is_question = true;
-            }
-            else if (splitted[i].matches("^\\?[1-9]$")) {
-                firstDigit.append(splitted[i].charAt(1));
-                list.add(Integer.parseInt(firstDigit.toString()));
-                is_question = true;
-            }
-            else if (splitted[i].matches("^\\?\\?$")) {
-                list.add(10);
-                is_question = true;
-            }
-            else if (splitted[i].matches("^\\d+$")) {
-                list.add(Integer.parseInt(splitted[i]));
-            }
-            else {
-                System.out.println("Неверное выражение!");
-                return;
-            }
-
         }
 
-        StringBuilder sb     = new StringBuilder();
-        int firstNum         = list.get(0);
-        int secondNum        = list.get(1);
-        int firstMultiplier  = (firstNum < 10) ? 10: 1;
-        int secondMultiplier = (secondNum < 10) ? 10: 1;
-        int result           = Integer.parseInt(splitted[2]);
+        SpecialNumber firstNum  = getSpecialNumber(splitted[0]);
+        SpecialNumber secondNum = getSpecialNumber(splitted[1]);
+        int result              = Integer.parseInt(splitted[2]);
 
-        if (is_question) {
-            for (int i = 1; i < 9; i++) {
-                int expValue = firstNum + (i * firstMultiplier) + secondNum + (i * secondMultiplier);
-                if (expValue == result) {
-                    sb.append(firstNum + (i * firstMultiplier));
-                    sb.append(" + ");
-                    sb.append(secondNum + (i * secondMultiplier));
-                    sb.append(" = ");
-                    sb.append(result);
-                    System.out.println("Найдено решение: " + sb.toString());
-                    return;
-                }
-            }
-
-            System.out.println("Нет решений");
-            return;
-        }
-        else {
-            if (firstNum + secondNum != result) {
-                System.out.println("Нет решений");
-                return;
-            }
-            else {
-                sb.append(firstNum);
-                sb.append(" + ");
-                sb.append(secondNum);
-                sb.append(" = ");
-                sb.append(result);
-                System.out.println("Найдено решение: " + sb.toString());
-            }
-        }
+        getResult(firstNum, secondNum, result);
     }
 }
 
