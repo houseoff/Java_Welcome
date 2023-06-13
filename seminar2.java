@@ -7,6 +7,7 @@ import java.util.Map;
 public class seminar2 {
     public static void main(String[] args) {
         readFile("text.txt");
+        writeFile("text.txt", "TEXT", 10);
     }
 
     // Задание 1. Дано число N > 0 и символы c1 и с2.
