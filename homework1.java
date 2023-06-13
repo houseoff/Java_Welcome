@@ -1,11 +1,22 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class homework1 {
-    
-    public static void main(String[] args) {
-        findNumbers();
+    public static Logger logger = Logger.getLogger(homework1.class.getName());
+    public static void main(String[] args) throws Exception {
+        startLogger("log_calc.log");
+        simpleCalc();
+    }
+
+    public static void startLogger(String fileName) throws Exception {
+        FileHandler fh = new FileHandler(fileName, true);
+        SimpleFormatter sf = new SimpleFormatter();
+        fh.setFormatter(sf);
+        logger.addHandler(fh);
     }
 
     // Задание 1. Вычислить сумму арифметической прогрессии
@@ -43,14 +54,18 @@ public class homework1 {
 
     // Задание 3. Реализовать простой калькулятор
     public static void simpleCalc() {
+        logger.info("START CALC");
         Scanner scanner = new Scanner(System.in);
         System.out.print("Введите 1-ое число: ");
         Integer first = scanner.nextInt();
+        logger.info(String.format("getting number 1: %d", first));
         System.out.print("Введите 2-ое число: ");
         Integer second = scanner.nextInt();
+        logger.info(String.format("getting number 2: %d", second));
         System.out.print("Введите действие: ");
         String action = scanner.next();
         action = action.trim();
+        logger.info(String.format("getting action: %s", action));
         int result = 0;
 
         if      (action.matches("^\\+$")) result = first + second;
@@ -59,6 +74,7 @@ public class homework1 {
         else if (action.matches("^/$"))   result = first / second;
 
         System.out.println("Результат " + first + " " + action + " " + second + ": " + result);
+        logger.info(String.format("getting result: %d", result));
         scanner.close();
     }
 

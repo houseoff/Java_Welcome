@@ -1,21 +1,32 @@
-import java.io.BufferedReader;
+﻿import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 
 public class homework2 {
+    public static Logger logger = Logger.getLogger(homework2.class.getName());
 
     public static void main(String[] args) throws Exception {
+        startLogger();
         task2();
     }
-    
+
+    public static void startLogger() throws Exception {
+        FileHandler fh = new FileHandler("log.txt", true);
+        SimpleFormatter sf = new SimpleFormatter();
+        fh.setFormatter(sf);
+        logger.addHandler(fh);
+    }
+
     // Задание 1. Дана строка запроса "select * from students WHERE"
     // Сформируйте часть WHERE этого запроса, используя StringBuilder
     // Данные для фильтрации приведены в виде JSON-строки
@@ -87,13 +98,49 @@ public class homework2 {
         return sb.toString();
     }
 
-    // Задание 3. Дан JSON-файл.
+    // Задание 2. Реализуйте алгоритм сортировки пузырьком
+    // числового массива, результат после каждой итерации
+    // запишите в лог-файл
+    public static void bubbleSort(int[] array) throws Exception {
+        boolean finish = true;
+        do {
+            finish = true;
+            for (int i = 0; i < array.length - 1; i++) {
+                if (array[i] > array[i+1]) {
+                    int temp = array[i];
+                    array[i] = array[i+1];
+                    array[i + 1] = temp; 
+                    finish = false;
+                }
+                logger.info("Current array: " + arrayToString(array));
+            }
+        }
+        while(!finish);
+    }
+
+    public static String arrayToString(int[] array) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < array.length - 1; i++) {
+            sb.append(array[i]);
+            sb.append(", ");
+        }
+        sb.append(array[array.length - 1] + "]");
+        return sb.toString();
+    }
+
+    public static void task2() throws Exception {
+        int[] array = new int[] {9, 6, 7, 4, 8, 3, 5, 2, 10, 1};
+        bubbleSort(array);
+    }
+
+    // Задание 3. Дан JSON-файл
     // Написать метод, который распартит JSON и, используя StringBuilder,
     // создаст строки вида: Студент [фамилия] получил [оценка] по предмету [предмет]
     public static class Students {
-        String name;
-        String result;
-        String discipline;
+        public String name;
+        public String result;
+        public String discipline;
         private Map<String, String> properties = new HashMap<>();
 
         private Map<String, String> getProperties(Map<String, String> properties) {
@@ -120,15 +167,23 @@ public class homework2 {
         }
         bReader.close();
 
-        List<Students> students = om.readValue(sb.toString(), new TypeReference<>(){});
+        sb.delete(0, 1);
+        String result           = sb.toString().replaceAll("фамилия", "name");
+        result                  = result.replaceAll("оценка", "result");
+        result                  = result.replaceAll("предмет", "discipline");
+        List<Students> students = om.readValue(result, new TypeReference<>(){});
         return students;
     }
 
-    public static void task2() throws Exception {
+    public static void task3() throws Exception {
         List<Students> list = toJsonArray("hw2.json");
+
         for (Students student : list) {
-            System.out.println(student.discipline);
+            System.out.printf("Студент %s получил %s по предмету %s", student.name, student.result, student.discipline);
+            System.out.println();
         }
     }
-}
 
+    // Задание 4. К калькулятору из предыдущего ДЗ добавить логирование
+    // Логирование добавлено в файле homework1.java
+}
