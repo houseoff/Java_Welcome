@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -53,9 +52,9 @@ public class homework5 {
     }
 
     private static void getContacts() {
-        List<Map.Entry<String, ArrayList<Long>>> list = new ArrayList<>(CONTACTS.entrySet());
+        List<Entry<String, ArrayList<Long>>> list = new ArrayList<>(CONTACTS.entrySet());
 
-        list.sort(new Comparator<Map.Entry<String, ArrayList<Long>>>() {
+        list.sort(new Comparator<Entry<String, ArrayList<Long>>>() {
             @Override
             public int compare(Entry<String, ArrayList<Long>> o1, Entry<String, ArrayList<Long>> o2) {
                 return Integer.compare(o2.getValue().size(), o1.getValue().size());
@@ -63,7 +62,7 @@ public class homework5 {
         });
 
         System.out.println("Список всех контактов");
-        for (Map.Entry<String, ArrayList<Long>> entry : list) {
+        for (Entry<String, ArrayList<Long>> entry : list) {
             for (Long element : entry.getValue()) {
                 System.out.printf("%s %d\n", entry.getKey(), element);
             }
