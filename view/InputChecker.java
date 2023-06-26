@@ -3,7 +3,7 @@ package view;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class InputCheker {
+public class InputChecker {
     private final static Scanner SC = new Scanner(System.in, "cp1251");
 
     private static String input() {
