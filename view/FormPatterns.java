@@ -1,6 +1,7 @@
+package view;
 import java.util.HashMap;
 
-public class ViewFormatter {
+public class FormPatterns {
 
     private static HashMap<Integer, String> mainMenu = new HashMap<>() {{
         put(1, "Просмотр всех товаров");
@@ -29,6 +30,7 @@ public class ViewFormatter {
         put(2, outputMap.get(propertiesMap.get(2)));
         put(3, outputMap.get(propertiesMap.get(3)));
         put(4, outputMap.get(propertiesMap.get(4)));
+        put(5, "Назад");
     }};
 
     public static HashMap<Integer, String> getMainMenuFormat() {
@@ -49,5 +51,9 @@ public class ViewFormatter {
 
     public static String getFilterMenuFormat(Integer number) {
         return filterMenuMap.get(number);
+    }
+
+    public static String getProperty(Integer num) {
+        return propertiesMap.get(num);
     }
 }

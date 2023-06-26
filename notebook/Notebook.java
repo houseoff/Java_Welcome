@@ -1,3 +1,5 @@
+package notebook;
+import view.FormPatterns;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -85,17 +87,24 @@ public class Notebook {
     public String toString() {
         String message = null;
         StringBuilder sb = new StringBuilder();
+        Integer counter = 1;
         for (var entry : getProperties().entrySet()) {
             if (entry.getValue() instanceof Integer) {
                 if ((Integer) entry.getValue() > 500) {
-                    message = String.format("%s: %d Тб\n", ViewFormatter.getOutputFormat(entry.getKey()), (Integer) entry.getValue() / 1024);
+                    message = String.format("%s: %d Тб", FormPatterns.getOutputFormat(entry.getKey()), (Integer) entry.getValue() / 1024);
                 } else {
-                    message = String.format("%s: %d Гб\n", ViewFormatter.getOutputFormat(entry.getKey()), entry.getValue());
+                    message = String.format("%s: %d Гб", FormPatterns.getOutputFormat(entry.getKey()), entry.getValue());
                 }
             } else {
-                message = String.format("%s: %s\n", ViewFormatter.getOutputFormat(entry.getKey()), entry.getValue());
+                message = String.format("%s: %s", FormPatterns.getOutputFormat(entry.getKey()), entry.getValue());
             }
-            sb.append(message);
+
+            if (counter != getProperties().entrySet().size()) {
+                sb.append(message);
+                sb.append("\n");
+            }
+            else sb.append(message);
+            counter++;
         }
         return sb.toString();
     }
